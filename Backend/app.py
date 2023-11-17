@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-import mysql.connector
+from flask_mysqldb import MySQL
 from config import DATABASE_URI
 
 app = Flask(__name__)
@@ -10,21 +10,37 @@ app.config['MYSQL_USER'] = 'sql12662911'
 app.config['MYSQL_PASSWORD'] = 'PSqhR4Tpuz'
 app.config['MYSQL_DB'] = 'sql12662911'
 
-try:
-    mysql_connection = mysql.connector.connect(
-        host=app.config['MYSQL_HOST'],
-        user=app.config['MYSQL_USER'],
-        password=app.config['MYSQL_PASSWORD'],
-        database=app.config['MYSQL_DB']
-    )
-    print("Connected to the database.")
-except mysql.connector.Error as err:
-    print(f"Error: {err}")
-    # Handle the error as needed
+# Initialize MySQL
+mysql = MySQL(app)
+
+# Create a table if it doesn't exist
+with app.app_context():
+    cursor = mysql.connection.cursor()
+
+    # Example: Create a 'jobs' table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS jobs (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description TEXT
+        )
+    ''')
+
+    # Commit changes
+    mysql.connection.commit()
+
+    # Close cursor
+    cursor.close()
 
 @app.route('/')
 def index():
     # Use MySQL queries here
+    cur = mysql.connection.cursor()
+    # Example query: cur.execute("SELECT * FROM jobs")
+    # result = cur.fetchall()
+    # Close the cursor
+    cur.close()
+    
     return render_template('index.html')
 
 if __name__ == '__main__':
