@@ -7,6 +7,11 @@
 </head>
 <body>
     <h1>Welcome, {{ username }}!</h1>
-    <!-- Add more content as needed for the user's dashboard -->
+    
+    <!-- Add your dashboard content here -->
+    
+    <form method="post" action="{{ url_for('logout') }}">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>
