@@ -56,7 +56,12 @@ def load_user(user_id):
 @app.route('/')
 @login_required
 def index():
-    return f'You are logged in as {current_user.username}!'
+    return redirect(url_for('dashboard'))
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', username=current_user.username)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,7 +79,7 @@ def login():
         if user_data:
             user = User(user_data[0], user_data[1])  # Assuming 'id' is the first element and 'username' is the second
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password', 'danger')
 
