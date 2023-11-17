@@ -1,0 +1,15 @@
+<!-- templates/signup.html -->
+{% extends 'home.html' %}
+
+{% block content %}
+    <h2>Sign Up</h2>
+    <form method="post">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required>
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+{% endblock %}
