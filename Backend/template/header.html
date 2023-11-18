@@ -1,0 +1,43 @@
+<!-- header.html -->
+<style>
+    /* header.css */
+
+.header {
+    background-color: #2a9df4;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.notification-icon {
+    cursor: pointer;
+}
+
+</style>
+<div class="header">
+    <div class="logo">JOBLOGGER</div>
+    <div class="user-section">
+        <div class="user-name">{{ username }}</div>
+        <img src="user-img.png" alt="User" class="user-img">
+        <div class="notification-icon">🔔</div>
+    </div>
+</div>
