@@ -134,22 +134,39 @@
         background-color: blue;  /* Change to your preferred hover background color */
         transition: background-color 0.3s;
     }
+
+         .add-job-button {
+    margin: 20px 0;
+}
+
+.add-listing-button {
+    background-color: #2a9df4;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
     </style>
 </head>
 
 <body>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">Joblogger</div>
+<!-- Header -->
+<div class="header">
+    <div class="logo">Joblogger</div>
 
-        <!-- User Section -->
-        <div class="user-section">
-            <div class="user-name">{{ username }}</div>
-            <img src="user-img.png" alt="User" class="user-img">
-            <div class="notification-icon">🔔</div>
-        </div>
+    <!-- User Section -->
+    <div class="user-section">
+        <div class="user-name">{{ username }}</div>
+        <img src="user-img.png" alt="User" class="user-img">
+        <div class="notification-icon">🔔</div>
     </div>
+</div>
+
+<!-- Add Job Button -->
+<div class="add-job-button">
+    <button class="add-listing-button">+ Add job</button>
+</div>
 
     <!-- Search Bar and Button -->
     <div class="search-container">
