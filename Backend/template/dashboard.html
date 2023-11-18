@@ -12,6 +12,7 @@
             padding: 0;
         }
 
+        /* Header Styles */
         .header {
             background-color: #2a9df4;
             color: white;
@@ -51,6 +52,7 @@
             cursor: pointer;
         }
 
+
         .user-dropdown {
             position: absolute;
             top: 100%;
@@ -78,6 +80,27 @@
             background-color: #dcdcdc;
         }
 
+
+        /* Navigation Options Styles */
+        .nav-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-option {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-option:hover {
+            color: #dcdcdc;
+        }
+
+        /* Search Container Styles */
+
         .search-container {
             display: flex;
             align-items: center;
@@ -99,11 +122,13 @@
             cursor: pointer;
         }
 
+        /* Main Container Styles */
         .main-container {
             display: flex;
             flex-direction: column;
         }
 
+        /* Menu Bar Styles */
         .menu-bar {
             background-color: #f3f5f9;
             display: flex;
@@ -133,6 +158,7 @@
             margin: 0;
             border-radius: 10px;
             margin-bottom: 5px;
+            transition: background-color 0.3s;
         }
 
         .menu-bar-nav-item:hover {
@@ -230,6 +256,7 @@
             }
         }
 
+        /* Footer Styles */
         .footer {
             background-color: #2a9df4;
             color: white;
@@ -239,7 +266,6 @@
             bottom: 0;
             width: 100%;
         }
-
     </style>
 </head>
 
@@ -249,7 +275,16 @@
     <div class="header">
         <div class="logo">JOBLOGGER</div>
 
-        <!-- User Section with Dropdown -->
+
+        <!-- Navigation Options -->
+        <div class="nav-options">
+            <a href="#" class="nav-option">Home</a>
+            <a href="#" class="nav-option">Contact</a>
+            <a href="#" class="nav-option">About</a>
+            <a href="#" class="nav-option">Contribute</a>
+        </div>
+
+        <!-- User Section -->
         <div class="user-section">
             <div class="user-name">{{ username }}
                 <div class="dropdown-arrow">▼</div>
@@ -272,38 +307,39 @@
     </div>
 
     <!-- Main Content Container -->
-    <div class="main-container">
+<div class="main-container">
 
-        <!-- Menu Bar -->
-        <div class="menu-bar">
-            <button class="menu-bar-nav-item add-listing-button">
-                + Add job
-            </button>
-            <button class="menu-bar-nav-item active">
-                Board
-            </button>
-            <button class="menu-bar-nav-item">
-                Statistics
-            </button>
-            <button class="menu-bar-nav-item">
-                Contacts
-            </button>
-            <button class="menu-bar-nav-item">
-                Documents
-            </button>
-            <button class="menu-bar-nav-item">
-                Settings
-            </button>
-            <button class="menu-bar-nav-item">
-                Import Spreadsheet
-            </button>
-            <button class="menu-bar-nav-item">
-                Community
-            </button>
-            <button class="menu-bar-nav-item help-option">
-                Help
-            </button>
-        </div>
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <a href="{{ url_for('add_job') }}" class="menu-bar-nav-item add-listing-button">
+            + Add job
+        </a>
+        <button class="menu-bar-nav-item active">
+            Board
+        </button>
+        <button class="menu-bar-nav-item">
+            Statistics
+        </button>
+        <button class="menu-bar-nav-item">
+            Contacts
+        </button>
+        <button class="menu-bar-nav-item">
+            Documents
+        </button>
+        <button class="menu-bar-nav-item">
+            Settings
+        </button>
+        <button class="menu-bar-nav-item">
+            Import Spreadsheet
+        </button>
+        <button class="menu-bar-nav-item">
+            Community
+        </button>
+        <button class="menu-bar-nav-item help-option">
+            Help
+        </button>
+    </div>
+</div>
 
         <!-- Application Status Box -->
         <div class="status-box">
@@ -330,6 +366,7 @@
         </div>
     </div>
 
+    <!-- Footer -->
     <div class="footer">
         <p>&copy; 2023 JobLogger. All rights reserved.</p>
     </div>
