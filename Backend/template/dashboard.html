@@ -1,17 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Joblogger Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .notification-icon {
+            cursor: pointer;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 10px;
+            margin-right: 20px;
+        }
+
+        .search-bar {
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        .search-button {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f3f5f9;
+            padding: 20px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-nav-item {
+            padding: 15px 0;
+            cursor: pointer;
+        }
+
+        .swimlane {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .swimlane-header {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-listing-button {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* Application Status Box Styles */
+        .status-box {
+            position: absolute;
+            top: 120px;
+            left: 275px;
+            display: flex;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-item {
+            margin-right: 30px;
+            text-align: center;
+        }
+
+        .status-count {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .status-label {
+            font-size: 1rem;
+        }
+         .status-item:hover {
+        background-color: blue;  /* Change to your preferred hover background color */
+        transition: background-color 0.3s;
+    }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome, {{ username }}!</h1>
-    
-    <!-- Add your dashboard content here -->
-    
-    <form method="post" action="{{ url_for('logout') }}">
-        <button type="submit">Logout</button>
-    </form>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">Joblogger</div>
+
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-name">{{ username }}</div>
+            <img src="user-img.png" alt="User" class="user-img">
+            <div class="notification-icon">🔔</div>
+        </div>
+    </div>
+
+    <!-- Search Bar and Button -->
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search...">
+        <button class="search-button">Search</button>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="main-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item active">
+                        Board
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Statistics
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Contacts
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Documents
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Settings
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Import Spreadsheet
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Community
+                    </li>
+                    <li class="sidebar-nav-item">
+                        Suggest a Feature
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Application Status Box -->
+        <div class="status-box">
+            <div class="status-item">
+                <span class="status-count">{{ wishlist_count }}</span>
+                <span class="status-label">Wishlist</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ applied_count }}</span>
+                <span class="status-label">Applied</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ interviewing_count }}</span>
+                <span class="status-label">Interviewing</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ offer_count }}</span>
+                <span class="status-label">Offer</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ rejected_count }}</span>
+                <span class="status-label">Rejected</span>
+            </div>
+        </div>
+    </div>
+
+
 </body>
+
 </html>

@@ -4,4 +4,4 @@ MYSQL_USER = 'sql12662911'
 MYSQL_PASSWORD = 'PSqhR4Tpuz'
 MYSQL_DB = 'sql12662911'
 
-DATABASE_URI = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}"
+SECRET_KEY = 'koohoo123'  # Add a secret key for session management

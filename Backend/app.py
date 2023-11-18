@@ -4,10 +4,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email
 from flask_mysqldb import MySQL
+import os
 
 app = Flask(__name__, template_folder='template')
 app.config.from_pyfile('config.py')
-app.config['SECRET_KEY'] = 'your_secret_key_here'
 
 # Initialize MySQL
 mysql = MySQL(app)
@@ -15,6 +15,7 @@ mysql = MySQL(app)
 # Flask-Login configuration
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+app.config['SECRET_KEY'] = app.config['SECRET_KEY'] or os.urandom(24)
 
 # User class for Flask-Login
 class User(UserMixin):
@@ -57,7 +58,38 @@ def index():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', username=current_user.username)
+    # Fetch data from the database for the logged-in user
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT username, wishlist_count, applied_count, interviewing_count, offer_count, rejected_count
+        FROM application_status
+        WHERE username = %s
+    """, (current_user.username,))
+    status_data = cur.fetchone()
+    cur.close()
+
+    if status_data:
+        # Convert the result to a dictionary
+        data = {
+            'username': status_data[0],
+            'wishlist_count': status_data[1],
+            'applied_count': status_data[2],
+            'interviewing_count': status_data[3],
+            'offer_count': status_data[4],
+            'rejected_count': status_data[5]
+        }
+    else:
+        # Default values if no data is found
+        data = {
+            'username': current_user.username,
+            'wishlist_count': 0,
+            'applied_count': 0,
+            'interviewing_count': 0,
+            'offer_count': 0,
+            'rejected_count': 0
+        }
+
+    return render_template('dashboard.html', **data)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
