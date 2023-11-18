@@ -1,0 +1,150 @@
+<!-- add_job.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Job | Joblogger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        /* Add your custom styles for the form here */
+
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            width: 50%;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .form-button,
+        .form-button-clear {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-button {
+            background-color: #2a9df4;
+            color: white;
+        }
+
+        .form-button-clear {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h2>Add Job</h2>
+        <form action="{{ url_for('add_job') }}" method="post">
+            {{ form.hidden_tag() }}  {# Add this line to include the CSRF token #}
+            <!-- Company Name -->
+            <div class="form-group">
+                <label for="company_name" class="form-label">Company Name*</label>
+                <input type="text" name="company_name" id="company_name" class="form-input" required>
+            </div>
+
+            <!-- Position -->
+            <div class="form-group">
+                <label for="position" class="form-label">Position*</label>
+                <input type="text" name="position" id="position" class="form-input" required>
+            </div>
+
+            <!-- Stage -->
+            <div class="form-group">
+                <label for="stage" class="form-label">Stage*</label>
+                <select name="stage" id="stage" class="form-select" required>
+                    <option value="wishlist">Wishlist</option>
+                    <option value="applied">Applied</option>
+                    <option value="interviewing">Interviewing</option>
+                    <option value="offer">Offer</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+
+            <!-- Salary -->
+            <div class="form-group">
+                <label for="salary" class="form-label">Salary</label>
+                <input type="text" name="salary" id="salary" class="form-input" placeholder="₹">
+            </div>
+
+            <!-- Job Type -->
+            <div class="form-group">
+                <label for="job_type" class="form-label">Job Type</label>
+                <select name="job_type" id="job_type" class="form-select">
+                    <option value="remote">Remote</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="onsite">Onsite</option>
+                </select>
+            </div>
+
+            <!-- URL -->
+            <div class="form-group">
+                <label for="url" class="form-label">URL</label>
+                <input type="text" name="url" id="url" class="form-input">
+            </div>
+
+            <!-- Applied On -->
+            <div class="form-group">
+                <label for="applied_on" class="form-label">Applied On</label>
+                <input type="date" name="applied_on" id="applied_on" class="form-input">
+            </div>
+
+            <!-- Description Box -->
+            <div class="form-group">
+                <label for="description" class="form-label">Description Box</label>
+                <textarea name="description" id="description" class="form-input" rows="4"></textarea>
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="location" id="location" class="form-input">
+            </div>
+
+            <!-- Application Type -->
+            <div class="form-group">
+                <label for="application_type" class="form-label">Application Type*</label>
+                <select name="application_type" id="application_type" class="form-select" required>
+                    <option value="part-time">Part-time</option>
+                    <option value="full-time">Full-time</option>
+                    <option value="internship">Internship</option>
+                </select>
+            </div>
+
+            <!-- Save and Clear Buttons -->
+            <div class="form-group">
+                <button type="submit" class="form-button">Save</button>
+                <button type="reset" class="form-button-clear">Clear</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
