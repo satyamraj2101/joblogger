@@ -32,16 +32,54 @@
         .user-section {
             display: flex;
             align-items: center;
+            margin-right: 20px;
         }
 
-        .user-img {
-            border-radius: 50%;
+        .user-name {
             margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            display: flex; /* Align items horizontally */
+            align-items: center; /* Center items vertically */
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 0.8rem;
         }
 
         .notification-icon {
             cursor: pointer;
         }
+
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            display: none;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user-name:hover .user-dropdown {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 6px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #dcdcdc;
+        }
+
 
         /* Navigation Options Styles */
         .nav-options {
@@ -62,6 +100,7 @@
         }
 
         /* Search Container Styles */
+
         .search-container {
             display: flex;
             align-items: center;
@@ -142,35 +181,62 @@
             background-color: #1e7fc4;
         }
 
-        /* Application Status Box Styles */
         .status-box {
             margin-left: 250px;
             display: flex;
             background-color: #fff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow-x: auto;
         }
 
         .status-item {
-            margin-right: 30px;
+            flex: 1;
             text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+
+        .status-item:nth-child(1) {
+            background-color: #6fd7ab;
+        }
+
+        .status-item:nth-child(2) {
+            background-color: #f5a623;
+        }
+
+        .status-item:nth-child(3) {
+            background-color: #5e6fe2;
+        }
+
+        .status-item:nth-child(4) {
+            background-color: #eb445a;
+        }
+
+        .status-item:nth-child(5) {
+            background-color: #7a8eff;
         }
 
         .status-count {
+            color: white;
             font-size: 2rem;
             font-weight: bold;
             display: block;
         }
 
         .status-label {
-            font-size: 1rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 5px 11px black;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
         }
 
         .status-item:hover {
-            background-color: blue;
-            /* Change to your preferred hover background color */
-            transition: background-color 0.3s;
+            background-color: #d9ffdb;
         }
 
         @media only screen and (max-width: 768px) {
@@ -182,6 +248,7 @@
             .status-box {
                 margin-left: 0;
                 margin-top: 20px;
+                overflow-x: auto;
             }
 
             .menu-bar .add-listing-button {
@@ -208,6 +275,7 @@
     <div class="header">
         <div class="logo">JOBLOGGER</div>
 
+
         <!-- Navigation Options -->
         <div class="nav-options">
             <a href="#" class="nav-option">Home</a>
@@ -218,8 +286,16 @@
 
         <!-- User Section -->
         <div class="user-section">
-            <div class="user-name">{{ username }}</div>
-            <img src="user-img.png" alt="User" class="user-img">
+            <div class="user-name">{{ username }}
+                <div class="dropdown-arrow">▼</div>
+                <div class="user-dropdown">
+                    <div class="dropdown-content">
+                        <a href="#">Profile</a>
+                        <a href="#">Change Password</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
             <div class="notification-icon">🔔</div>
         </div>
     </div>
