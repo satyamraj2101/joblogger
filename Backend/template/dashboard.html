@@ -1,3 +1,5 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +22,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo {
@@ -67,48 +70,61 @@
             flex-direction: column;
         }
 
-        .sidebar {
-            width: 250px;
+        .menu-bar {
             background-color: #f3f5f9;
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
             padding: 20px;
         }
 
-        .sidebar-nav {
+        .menu-bar-nav {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
-        .sidebar-nav-item {
-            padding: 15px 0;
+        .menu-bar-nav-item {
+            padding: 15px 20px;
             cursor: pointer;
+            background-color: #f3f5f9;
+            {#transition: background-color 0.3s;#}
+            border: none;
+            text-align: left;
+            width: 100%;
+            display: block;
+            font-size: 1rem;
+            margin: 0;
+            border-radius: 10px;
+            margin-bottom: 5px;
         }
 
-        .swimlane {
-            flex-grow: 1;
-            padding: 20px;
+        .menu-bar-nav-item:hover {
+            background-color: #dcdcdc;
         }
 
-        .swimlane-header {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .add-listing-button {
+        .menu-bar .add-listing-button {
             background-color: #2a9df4;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 15px;
             cursor: pointer;
+            margin-top: 20px;
+            position: relative;
+            transition: background-color 0.3s;
+            border-radius: 10px; /* Added border-radius for curved corners */
+        }
+
+        .menu-bar .add-listing-button:hover {
+            background-color: #1e7fc4;
         }
 
         /* Application Status Box Styles */
         .status-box {
-            position: absolute;
-            top: 120px;
-            left: 275px;
+            margin-left: 250px;
             display: flex;
             background-color: #fff;
             padding: 20px;
@@ -130,43 +146,57 @@
         .status-label {
             font-size: 1rem;
         }
-         .status-item:hover {
-        background-color: blue;  /* Change to your preferred hover background color */
-        transition: background-color 0.3s;
-    }
 
-         .add-job-button {
-    margin: 20px 0;
-}
+        .status-item:hover {
+            background-color: blue;
+            /* Change to your preferred hover background color */
+            transition: background-color 0.3s;
+        }
 
-.add-listing-button {
-    background-color: #2a9df4;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
+        @media only screen and (max-width: 768px) {
+            .menu-bar {
+                width: 100%;
+                position: static;
+            }
+
+            .status-box {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+
+            .menu-bar .add-listing-button {
+                width: 100%;
+            }
+
+        }
+        /* footer.css */
+
+        .footer {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 1px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
     </style>
 </head>
 
 <body>
 
-<!-- Header -->
-<div class="header">
-    <div class="logo">JOBLOGGER</div>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">JOBLOGGER</div>
 
-    <!-- User Section -->
-    <div class="user-section">
-        <div class="user-name">{{ username }}</div>
-        <img src="user-img.png" alt="User" class="user-img">
-        <div class="notification-icon">🔔</div>
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-name">{{ username }}</div>
+            <img src="user-img.png" alt="User" class="user-img">
+            <div class="notification-icon">🔔</div>
+        </div>
     </div>
-</div>
-
-<!-- Add Job Button -->
-<div class="add-job-button">
-    <button class="add-listing-button">+ Add job</button>
-</div>
 
     <!-- Search Bar and Button -->
     <div class="search-container">
@@ -177,36 +207,35 @@
     <!-- Main Content Container -->
     <div class="main-container">
 
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <nav>
-                <ul class="sidebar-nav">
-                    <li class="sidebar-nav-item active">
-                        Board
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Statistics
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Contacts
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Documents
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Settings
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Import Spreadsheet
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Community
-                    </li>
-                    <li class="sidebar-nav-item">
-                        Suggest a Feature
-                    </li>
-                </ul>
-            </nav>
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <button class="menu-bar-nav-item add-listing-button">
+                + Add job
+            </button>
+            <button class="menu-bar-nav-item active">
+                Board
+            </button>
+            <button class="menu-bar-nav-item">
+                Statistics
+            </button>
+            <button class="menu-bar-nav-item">
+                Contacts
+            </button>
+            <button class="menu-bar-nav-item">
+                Documents
+            </button>
+            <button class="menu-bar-nav-item">
+                Settings
+            </button>
+            <button class="menu-bar-nav-item">
+                Import Spreadsheet
+            </button>
+            <button class="menu-bar-nav-item">
+                Community
+            </button>
+            <button class="menu-bar-nav-item help-option">
+                Help
+            </button>
         </div>
 
         <!-- Application Status Box -->
@@ -234,7 +263,9 @@
         </div>
     </div>
 
-
+    <div class="footer">
+        <p>&copy; 2023 JobLogger. All rights reserved.</p>
+    </div>
 </body>
 
 </html>
