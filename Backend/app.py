@@ -1,13 +1,15 @@
+import logging
+import os
+import pymysql
+from datetime import date, datetime, timedelta
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
+from flask_mysqldb import MySQL
+from flask_wtf import FlaskForm  # Add this line
+from wtforms import SelectField, DateField, TextAreaField
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email
-from flask_mysqldb import MySQL
-from wtforms import SelectField, DateField, TextAreaField
-import os
-import logging
-from datetime import date
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='template')
 app.config.from_pyfile('config.py')
@@ -25,46 +27,80 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 app.config['SECRET_KEY'] = app.config['SECRET_KEY'] or os.urandom(24)
 
+
 # User class for Flask-Login
 class User(UserMixin):
     def __init__(self, user_id, username):
         self.id = user_id
         self.username = username
 
-# SQL command to create the jobs table
-CREATE_JOBS_TABLE = """
-    CREATE TABLE IF NOT EXISTS jobs (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        company_name VARCHAR(255) NOT NULL,
-        position VARCHAR(255) NOT NULL,
-        stage VARCHAR(255) NOT NULL,
-        salary VARCHAR(255),
-        job_type VARCHAR(255),
-        url VARCHAR(255),
-        applied_on DATE,
-        description TEXT,
-        location VARCHAR(255),
-        application_type VARCHAR(255) NOT NULL,
-        user_id INT,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    )
-"""
 
-# Flask-WTF forms
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+# Create jobs table if not exists
+# Create jobs table if not exists
+with app.app_context():
+    cur = mysql.connection.cursor()
+    CREATE_JOBS_TABLE = """
+        CREATE TABLE IF NOT EXISTS jobs (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            company_name VARCHAR(255) NOT NULL,
+            position VARCHAR(255) NOT NULL,
+            stage VARCHAR(255) NOT NULL,
+            salary VARCHAR(255),
+            job_type VARCHAR(255),
+            url VARCHAR(255),
+            applied_on DATE,
+            description TEXT,
+            location VARCHAR(255),
+            application_type VARCHAR(255) NOT NULL,
+            user_id INT,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """
+    cur.execute(CREATE_JOBS_TABLE)
 
-class SignupForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Sign Up')
+    CREATE_SALARIES_TABLE = """
+        CREATE TABLE IF NOT EXISTS salaries (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            emp_no INT,
+            salary VARCHAR(255),
+            from_date DATE,
+            to_date DATE,
+            FOREIGN KEY (emp_no) REFERENCES users(id)
+        )
+    """
+    cur.execute(CREATE_SALARIES_TABLE)
 
-class ForgotPasswordForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Reset Password')
+    mysql.connection.commit()
+    cur.close()
+
+
+
+# Flask-WTF form for the add_job route
+class AddJobForm(FlaskForm):
+    company_name = StringField('Company Name', validators=[DataRequired()])
+    position = StringField('Position', validators=[DataRequired()])
+    stage = SelectField('Stage', choices=[
+        ('wishlist', 'Wishlist'),
+        ('applied', 'Applied'),
+        ('interviewing', 'Interviewing'),
+        ('offer', 'Offer'),
+        ('rejected', 'Rejected')],
+        validators=[DataRequired()])
+    salary = StringField('Salary')
+    job_type = SelectField('Job Type', choices=[
+        ('remote', 'Remote'),
+        ('hybrid', 'Hybrid'),
+        ('onsite', 'Onsite')])
+    url = StringField('URL')
+    applied_on = DateField('Applied On', format='%Y-%m-%d')
+    description = TextAreaField('Description Box')
+    location = StringField('Location')
+    application_type = SelectField('Application Type', choices=[
+        ('part-time', 'Part-time'),
+        ('full-time', 'Full-time'),
+        ('internship', 'Internship')],
+        validators=[DataRequired()])
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -77,46 +113,39 @@ def load_user(user_id):
         return User(user_data[0], user_data[1])  # Assuming 'id' is the first element and 'username' is the second
     return None
 
+
 @app.route('/')
 @login_required
 def index():
     return redirect(url_for('dashboard'))
 
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Fetch data from the database for the logged-in user
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT username, wishlist_count, applied_count, interviewing_count, offer_count, rejected_count
-        FROM application_status
-        WHERE username = %s
-    """, (current_user.username,))
-    status_data = cur.fetchone()
-    cur.close()
+    stages = ['wishlist', 'applied', 'interviewing', 'offer', 'rejected']
 
-    if status_data:
-        # Convert the result to a dictionary
-        data = {
-            'username': status_data[0],
-            'wishlist_count': status_data[1],
-            'applied_count': status_data[2],
-            'interviewing_count': status_data[3],
-            'offer_count': status_data[4],
-            'rejected_count': status_data[5]
-        }
-    else:
-        # Default values if no data is found
-        data = {
-            'username': current_user.username,
-            'wishlist_count': 0,
-            'applied_count': 0,
-            'interviewing_count': 0,
-            'offer_count': 0,
-            'rejected_count': 0
-        }
+    query = "SELECT COUNT(*) FROM jobs WHERE stage=%s AND user_id=%s"
+
+    counts = {}
+    for stage in stages:
+        cur = mysql.connection.cursor()
+        cur.execute(query, (stage, current_user.id))
+        count = cur.fetchone()[0]
+        counts[stage + '_count'] = count
+
+    data = {
+        'username': current_user.username,
+        'wishlist_count': counts['wishlist_count'],
+        'applied_count': counts['applied_count'],
+        'interviewing_count': counts['interviewing_count'],
+        'offer_count': counts['offer_count'],
+        'rejected_count': counts['rejected_count']
+        # Add other counts as needed
+    }
 
     return render_template('dashboard.html', **data)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -139,6 +168,7 @@ def login():
             flash('Invalid username or password', 'danger')
 
     return render_template('login.html', form=form)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -168,11 +198,13 @@ def signup():
 
     return render_template('signup.html', form=form)
 
+
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -184,31 +216,6 @@ def forgot_password():
 
     return render_template('forgot_password.html', form=form)
 
-# Flask-WTF form for the add_job route
-class AddJobForm(FlaskForm):
-    company_name = StringField('Company Name', validators=[DataRequired()])
-    position = StringField('Position', validators=[DataRequired()])
-    stage = SelectField('Stage', choices=[
-        ('wishlist', 'Wishlist'),
-        ('applied', 'Applied'),
-        ('interviewing', 'Interviewing'),
-        ('offer', 'Offer'),
-        ('rejected', 'Rejected')],
-        validators=[DataRequired()])
-    salary = StringField('Salary')
-    job_type = SelectField('Job Type', choices=[
-        ('remote', 'Remote'),
-        ('hybrid', 'Hybrid'),
-        ('onsite', 'Onsite')])
-    url = StringField('URL')
-    applied_on = DateField('Applied On', format='%Y-%m-%d')
-    description = TextAreaField('Description Box')
-    location = StringField('Location')
-    application_type = SelectField('Application Type', choices=[
-        ('part-time', 'Part-time'),
-        ('full-time', 'Full-time'),
-        ('internship', 'Internship')],
-        validators=[DataRequired()])
 
 @app.route('/add_job', methods=['GET', 'POST'])
 @login_required
@@ -234,9 +241,6 @@ def add_job():
         cur = mysql.connection.cursor()
 
         try:
-            # Create the jobs table if it doesn't exist
-            cur.execute(CREATE_JOBS_TABLE)
-
             # Insert job data for the current user
             cur.execute("""
                 INSERT INTO jobs 
@@ -245,6 +249,19 @@ def add_job():
             """, (
                 company_name, position, stage, salary, job_type, url, applied_on, description, location, application_type,
                 current_user.id))
+
+            # Insert salary information
+            add_salary = ("INSERT INTO salaries "
+                          "(emp_no, salary, from_date, to_date) "
+                          "VALUES (%(emp_no)s, %(salary)s, %(from_date)s, %(to_date)s)")
+
+            data_salary = {
+                'emp_no': current_user.id,
+                'salary': salary,
+                'from_date': applied_on,
+                'to_date': date(9999, 1, 1),
+            }
+            cur.execute(add_salary, data_salary)
 
             mysql.connection.commit()
             flash('Job added successfully!', 'success')
@@ -261,6 +278,7 @@ def add_job():
 
     # Render the 'add_job.html' template if the form is not valid or an exception occurred
     return render_template('add_job.html', form=form)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
