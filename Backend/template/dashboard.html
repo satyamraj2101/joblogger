@@ -161,6 +161,10 @@
             transition: background-color 0.3s;
         }
 
+        .menu-bar-nav-item .nav-link{
+            text-decoration: none;
+        }
+
         .menu-bar-nav-item:hover {
             background-color: #dcdcdc;
         }
@@ -288,6 +292,7 @@
             background-color: #1e7fc4;
         }
 
+
         /* Footer Styles */
         .footer {
             background-color: #2a9df4;
@@ -346,7 +351,7 @@
                 + Add job
             </a>
             <button class="menu-bar-nav-item active">
-                Board
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Board</a>
             </button>
             <button class="menu-bar-nav-item">
                 Statistics
