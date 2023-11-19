@@ -5,6 +5,8 @@
     <title>Joblogger Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: "Open Sans", sans-serif;
@@ -52,7 +54,6 @@
             cursor: pointer;
         }
 
-
         .user-dropdown {
             position: absolute;
             top: 100%;
@@ -80,7 +81,6 @@
             background-color: #dcdcdc;
         }
 
-
         /* Navigation Options Styles */
         .nav-options {
             display: flex;
@@ -100,7 +100,6 @@
         }
 
         /* Search Container Styles */
-
         .search-container {
             display: flex;
             align-items: center;
@@ -126,6 +125,7 @@
         .main-container {
             display: flex;
             flex-direction: column;
+            padding-bottom: 20px; /* Added padding to the bottom */
         }
 
         /* Menu Bar Styles */
@@ -165,21 +165,22 @@
             background-color: #dcdcdc;
         }
 
-        .menu-bar .add-listing-button {
-            background-color: #2a9df4;
-            color: white;
-            border: none;
-            padding: 15px;
-            cursor: pointer;
-            margin-top: 20px;
-            position: relative;
-            transition: background-color 0.3s;
-            border-radius: 10px;
-        }
+    .menu-bar .add-listing-button {
+        background-color: #2a9df4;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        margin-top: 20px;
+        position: relative;
+        transition: background-color 0.3s;
+        border-radius: 10px;
+        text-decoration: none; /* Remove underline */
+    }
 
-        .menu-bar .add-listing-button:hover {
-            background-color: #1e7fc4;
-        }
+    .menu-bar .add-listing-button:hover {
+        background-color: #1e7fc4;
+    }
 
         .status-box {
             margin-left: 250px;
@@ -256,6 +257,37 @@
             }
         }
 
+        /* Chart Container Styles */
+        .chart-container {
+            background-color: #fff;
+            padding: 20px; /* Smaller padding */
+            border-radius: 10px;
+            margin: 20px 0;
+            align-self: flex-end; /* Align to the right */
+            height: 300px;
+            width: calc(100% - 250px); /* Adjusted width */
+        }
+
+        .togglebutton {
+            text-align: right;
+            margin-right: 20px;
+            margin-top: 10px;
+        }
+
+        .toggleChartButton {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 24px;
+            transition: background-color 0.3s;
+        }
+
+        .toggleChartButton:hover {
+            background-color: #1e7fc4;
+        }
+
         /* Footer Styles */
         .footer {
             background-color: #2a9df4;
@@ -274,7 +306,6 @@
     <!-- Header -->
     <div class="header">
         <div class="logo">JOBLOGGER</div>
-
 
         <!-- Navigation Options -->
         <div class="nav-options">
@@ -307,39 +338,38 @@
     </div>
 
     <!-- Main Content Container -->
-<div class="main-container">
+    <div class="main-container">
 
-    <!-- Menu Bar -->
-    <div class="menu-bar">
-        <a href="{{ url_for('add_job') }}" class="menu-bar-nav-item add-listing-button">
-            + Add job
-        </a>
-        <button class="menu-bar-nav-item active">
-            Board
-        </button>
-        <button class="menu-bar-nav-item">
-            Statistics
-        </button>
-        <button class="menu-bar-nav-item">
-            Contacts
-        </button>
-        <button class="menu-bar-nav-item">
-            Documents
-        </button>
-        <button class="menu-bar-nav-item">
-            Settings
-        </button>
-        <button class="menu-bar-nav-item">
-            Import Spreadsheet
-        </button>
-        <button class="menu-bar-nav-item">
-            Community
-        </button>
-        <button class="menu-bar-nav-item help-option">
-            Help
-        </button>
-    </div>
-</div>
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <a href="{{ url_for('add_job') }}" class="menu-bar-nav-item add-listing-button">
+                + Add job
+            </a>
+            <button class="menu-bar-nav-item active">
+                Board
+            </button>
+            <button class="menu-bar-nav-item">
+                Statistics
+            </button>
+            <button class="menu-bar-nav-item">
+                Contacts
+            </button>
+            <button class="menu-bar-nav-item">
+                Documents
+            </button>
+            <button class="menu-bar-nav-item">
+                Settings
+            </button>
+            <button class="menu-bar-nav-item">
+                Import Spreadsheet
+            </button>
+            <button class="menu-bar-nav-item">
+                Community
+            </button>
+            <button class="menu-bar-nav-item help-option">
+                Help
+            </button>
+        </div>
 
         <!-- Application Status Box -->
         <div class="status-box">
@@ -364,12 +394,71 @@
                 <span class="status-label">Rejected</span>
             </div>
         </div>
+
+        <!-- Bar Graph / Pie Chart Switch Button -->
+        <div class="togglebutton">
+            <button class="toggleChartButton" onclick="toggleChart()">Toggle Chart</button>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
     </div>
 
     <!-- Footer -->
     <div class="footer">
         <p>&copy; 2023 JobLogger. All rights reserved.</p>
     </div>
+
+    <script>
+        // Function to toggle between bar graph and pie chart
+        function toggleChart() {
+            var chartType = chart.config.type === 'bar' ? 'pie' : 'bar';
+            updateChartType(chartType);
+        }
+
+        // Function to update the chart type
+        function updateChartType(chartType) {
+            chart.destroy(); // Destroy the existing chart
+            initChart(chartType); // Initialize the chart with the new type
+        }
+
+        // Function to initialize the chart
+        function initChart(chartType) {
+            var ctx = document.getElementById('statusChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: ['Wishlist', 'Applied', 'Interviewing', 'Offer', 'Rejected'],
+                    datasets: [{
+                        label: 'Application Status',
+                        data: [{{ wishlist_count }}, {{ applied_count }}, {{ interviewing_count }}, {{ offer_count }}, {{ rejected_count }}],
+                        backgroundColor: [
+                            '#6fd7ab',
+                            '#f5a623',
+                            '#5e6fe2',
+                            '#eb445a',
+                            '#7a8eff',
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                }
+            });
+        }
+
+        // Initial chart type
+        var chart;
+        initChart('bar');
+    </script>
 </body>
 
 </html>
