@@ -1,16 +1,15 @@
-import logging
 import os
-import pymysql
-from datetime import date, datetime, timedelta
+import logging
+from datetime import date
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mysqldb import MySQL
-from flask_wtf import FlaskForm  # Add this line
-from wtforms import SelectField, DateField, TextAreaField
-from wtforms import StringField, PasswordField, SubmitField
+from flask_wtf import FlaskForm
+from wtforms import SelectField, DateField, TextAreaField, StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Initialize Flask app
 app = Flask(__name__, template_folder='template')
 app.config.from_pyfile('config.py')
 
@@ -19,8 +18,8 @@ mysql = MySQL(app)
 
 # Set up logging to a file
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs.txt')
-logging.basicConfig(filename=log_file, level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s [%(levelname)s]: %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 # Flask-Login configuration
 login_manager = LoginManager(app)
@@ -34,11 +33,17 @@ class User(UserMixin):
         self.id = user_id
         self.username = username
 
+# Define the LoginForm class
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
 
-# Create jobs table if not exists
-# Create jobs table if not exists
+
+# Create tables if not exists
 with app.app_context():
     cur = mysql.connection.cursor()
+
     CREATE_JOBS_TABLE = """
         CREATE TABLE IF NOT EXISTS jobs (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,7 +78,12 @@ with app.app_context():
     mysql.connection.commit()
     cur.close()
 
-
+# Define the SignupForm class
+class SignupForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Sign Up')
 
 # Flask-WTF form for the add_job route
 class AddJobForm(FlaskForm):
@@ -113,6 +123,8 @@ def load_user(user_id):
         return User(user_data[0], user_data[1])  # Assuming 'id' is the first element and 'username' is the second
     return None
 
+
+# Routes
 
 @app.route('/')
 @login_required
