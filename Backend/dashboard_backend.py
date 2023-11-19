@@ -3,6 +3,7 @@ from flask import render_template
 from flask_login import login_required, current_user
 from flask_mysqldb import MySQL
 from app import app  # Assuming 'app' is the Flask application instance
+import pymysql
 
 # Initialize MySQL
 mysql = MySQL(app)
@@ -10,38 +11,37 @@ mysql = MySQL(app)
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Fetch data from the database for the logged-in user
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT username, wishlist_count, applied_count, interviewing_count, offer_count, rejected_count
-        FROM application_status
-        WHERE username = %s
-    """, (current_user.username,))
-    status_data = cur.fetchone()
-    cur.close()
+    try:
+        # Fetch data from the database for the logged-in user
+        cur = mysql.connection.cursor(pymysql.cursors.DictCursor)  # Use DictCursor from pymysql
 
-    if status_data:
+        # Count jobs for each stage
+        stages = ['wishlist', 'applied', 'interviewing', 'offer', 'rejected']
+        counts = {}
+
+        for stage in stages:
+            cur.execute("SELECT COUNT(*) FROM jobs WHERE stage=%s AND user_id=%s", (stage, current_user.id))
+            count_result = cur.fetchone()
+            counts[stage + '_count'] = count_result['COUNT(*)']
+
         # Convert the result to a dictionary
         data = {
-            'username': status_data[0],
-            'wishlist_count': status_data[1],
-            'applied_count': status_data[2],
-            'interviewing_count': status_data[3],
-            'offer_count': status_data[4],
-            'rejected_count': status_data[5]
-        }
-    else:
-        # Default values if no data is found
-        data = {
             'username': current_user.username,
-            'wishlist_count': 0,
-            'applied_count': 0,
-            'interviewing_count': 0,
-            'offer_count': 0,
-            'rejected_count': 0
+            'wishlist_count': counts['wishlist_count'],
+            'applied_count': counts['applied_count'],
+            'interviewing_count': counts['interviewing_count'],
+            'offer_count': counts['offer_count'],
+            'rejected_count': counts['rejected_count']
         }
 
-    return render_template('dashboard.html', **data)
+        return render_template('dashboard.html', **data)
+
+    except Exception as e:
+        app.logger.error("Error fetching data from the database: %s", e)
+        # Handle the error, e.g., render an error template or redirect to an error page
+
+    finally:
+        cur.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
