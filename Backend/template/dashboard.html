@@ -1,17 +1,375 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Joblogger Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .user-name {
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            display: flex; /* Align items horizontally */
+            align-items: center; /* Center items vertically */
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+
+        .notification-icon {
+            cursor: pointer;
+        }
+
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            display: none;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user-name:hover .user-dropdown {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 6px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #dcdcdc;
+        }
+
+
+        /* Navigation Options Styles */
+        .nav-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-option {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-option:hover {
+            color: #dcdcdc;
+        }
+
+        /* Search Container Styles */
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 10px;
+            margin-right: 20px;
+        }
+
+        .search-bar {
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        .search-button {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* Main Container Styles */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Menu Bar Styles */
+        .menu-bar {
+            background-color: #f3f5f9;
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            padding: 20px;
+        }
+
+        .menu-bar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-bar-nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            background-color: #f3f5f9;
+            border: none;
+            text-align: left;
+            width: 100%;
+            display: block;
+            font-size: 1rem;
+            margin: 0;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-bar-nav-item:hover {
+            background-color: #dcdcdc;
+        }
+
+        .menu-bar .add-listing-button {
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            position: relative;
+            transition: background-color 0.3s;
+            border-radius: 10px;
+        }
+
+        .menu-bar .add-listing-button:hover {
+            background-color: #1e7fc4;
+        }
+
+        .status-box {
+            margin-left: 250px;
+            display: flex;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .status-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+
+        .status-item:nth-child(1) {
+            background-color: #6fd7ab;
+        }
+
+        .status-item:nth-child(2) {
+            background-color: #f5a623;
+        }
+
+        .status-item:nth-child(3) {
+            background-color: #5e6fe2;
+        }
+
+        .status-item:nth-child(4) {
+            background-color: #eb445a;
+        }
+
+        .status-item:nth-child(5) {
+            background-color: #7a8eff;
+        }
+
+        .status-count {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .status-label {
+            letter-spacing: 2px;
+            text-shadow: 2px 5px 11px black;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .status-item:hover {
+            background-color: #d9ffdb;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .menu-bar {
+                width: 100%;
+                position: static;
+            }
+
+            .status-box {
+                margin-left: 0;
+                margin-top: 20px;
+                overflow-x: auto;
+            }
+
+            .menu-bar .add-listing-button {
+                width: 100%;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 1px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome, {{ username }}!</h1>
-    
-    <!-- Add your dashboard content here -->
-    
-    <form method="post" action="{{ url_for('logout') }}">
-        <button type="submit">Logout</button>
-    </form>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">JOBLOGGER</div>
+
+
+        <!-- Navigation Options -->
+        <div class="nav-options">
+            <a href="#" class="nav-option">Home</a>
+            <a href="#" class="nav-option">Contact</a>
+            <a href="#" class="nav-option">About</a>
+            <a href="#" class="nav-option">Contribute</a>
+        </div>
+
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-name">{{ username }}
+                <div class="dropdown-arrow">▼</div>
+                <div class="user-dropdown">
+                    <div class="dropdown-content">
+                        <a href="#">Profile</a>
+                        <a href="#">Change Password</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="notification-icon">🔔</div>
+        </div>
+    </div>
+
+    <!-- Search Bar and Button -->
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search...">
+        <button class="search-button">Search</button>
+    </div>
+
+    <!-- Main Content Container -->
+<div class="main-container">
+
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <a href="{{ url_for('add_job') }}" class="menu-bar-nav-item add-listing-button">
+            + Add job
+        </a>
+        <button class="menu-bar-nav-item active">
+            Board
+        </button>
+        <button class="menu-bar-nav-item">
+            Statistics
+        </button>
+        <button class="menu-bar-nav-item">
+            Contacts
+        </button>
+        <button class="menu-bar-nav-item">
+            Documents
+        </button>
+        <button class="menu-bar-nav-item">
+            Settings
+        </button>
+        <button class="menu-bar-nav-item">
+            Import Spreadsheet
+        </button>
+        <button class="menu-bar-nav-item">
+            Community
+        </button>
+        <button class="menu-bar-nav-item help-option">
+            Help
+        </button>
+    </div>
+</div>
+
+        <!-- Application Status Box -->
+        <div class="status-box">
+            <div class="status-item">
+                <span class="status-count">{{ wishlist_count }}</span>
+                <span class="status-label">Wishlist</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ applied_count }}</span>
+                <span class="status-label">Applied</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ interviewing_count }}</span>
+                <span class="status-label">Interviewing</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ offer_count }}</span>
+                <span class="status-label">Offer</span>
+            </div>
+            <div class="status-item">
+                <span class="status-count">{{ rejected_count }}</span>
+                <span class="status-label">Rejected</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2023 JobLogger. All rights reserved.</p>
+    </div>
 </body>
+
 </html>

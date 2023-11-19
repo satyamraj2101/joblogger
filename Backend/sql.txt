@@ -1,0 +1,36 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE application_status (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    wishlist_count INT,
+    applied_count INT,
+    interviewing_count INT,
+    offer_count INT,
+    rejected_count INT,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(255) NOT NULL,
+    position VARCHAR(255) NOT NULL,
+    stage VARCHAR(255) NOT NULL,
+    salary VARCHAR(255),
+    job_type VARCHAR(255),
+    url VARCHAR(255),
+    applied_on DATE,
+    description TEXT,
+    location VARCHAR(255),
+    application_type VARCHAR(255) NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX idx_user_id ON jobs (user_id);
