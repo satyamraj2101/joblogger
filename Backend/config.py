@@ -3,7 +3,7 @@
 
 MYSQL_HOST = 'db4free.net'
 MYSQL_USER = 'joblogger_jh'
-MYSQL_PASSWORD = 'joblogger123'
+MYSQL_PASSWORD = 'ee6f59b6'
 MYSQL_DB = 'joblogger'
 
 SECRET_KEY = 'koohoo123'

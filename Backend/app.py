@@ -292,5 +292,35 @@ def add_job():
     return render_template('add_job.html', form=form)
 
 
+@app.route('/profile')
+@login_required
+def profile():
+    # Fetch user data from the database using the current user's ID
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE id=%s", (current_user.id,))
+    user_data = cur.fetchone()
+
+    # Fetch total jobs added count from application_status table
+    cur.execute(
+        "SELECT SUM(wishlist_count + applied_count + interviewing_count + offer_count + rejected_count) FROM application_status WHERE user_id=%s",
+        (current_user.id,))
+    jobs_added_count = cur.fetchone()[0] or 0  # Set to 0 if count is None
+    cur.close()
+
+    if user_data:
+        user = {
+            'id': user_data[0],
+            'username': user_data[1],
+            'email': user_data[2],
+            'password': user_data[3],
+            'jobs_added': jobs_added_count,
+        }
+
+        return render_template('profile.html', user=user)
+
+    flash('User not found', 'danger')
+    return redirect(url_for('dashboard'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
