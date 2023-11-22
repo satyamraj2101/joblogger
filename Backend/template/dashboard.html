@@ -161,6 +161,10 @@
             transition: background-color 0.3s;
         }
 
+        .menu-bar-nav-item .nav-link{
+            text-decoration: none;
+        }
+
         .menu-bar-nav-item:hover {
             background-color: #dcdcdc;
         }
@@ -288,6 +292,7 @@
             background-color: #1e7fc4;
         }
 
+
         /* Footer Styles */
         .footer {
             background-color: #2a9df4;
@@ -309,7 +314,7 @@
 
         <!-- Navigation Options -->
         <div class="nav-options">
-            <a href="#" class="nav-option">Home</a>
+            <a href="{{ url_for('dashboard')}}" class="nav-option">Home</a>
             <a href="#" class="nav-option">Contact</a>
             <a href="#" class="nav-option">About</a>
             <a href="#" class="nav-option">Contribute</a>
@@ -321,7 +326,7 @@
                 <div class="dropdown-arrow">▼</div>
                 <div class="user-dropdown">
                     <div class="dropdown-content">
-                        <a href="#">Profile</a>
+                        <a href="{{ url_for('profile') }}">Profile</a>
                         <a href="#">Change Password</a>
                         <a href="{{ url_for('logout') }}">Logout</a>
                     </div>
@@ -346,7 +351,7 @@
                 + Add job
             </a>
             <button class="menu-bar-nav-item active">
-                Board
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Board</a>
             </button>
             <button class="menu-bar-nav-item">
                 Statistics
