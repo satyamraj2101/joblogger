@@ -1,36 +1,82 @@
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL
 );
-
 CREATE TABLE application_status (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    wishlist_count INT,
-    applied_count INT,
-    interviewing_count INT,
-    offer_count INT,
-    rejected_count INT,
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(255) NOT NULL,
+wishlist_count INT,
+applied_count INT,
+interviewing_count INT,
+offer_count INT,
+rejected_count INT,
+user_id INT,
+FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
 CREATE TABLE jobs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    company_name VARCHAR(255) NOT NULL,
-    position VARCHAR(255) NOT NULL,
-    stage VARCHAR(255) NOT NULL,
-    salary VARCHAR(255),
-    job_type VARCHAR(255),
-    url VARCHAR(255),
-    applied_on DATE,
-    description TEXT,
-    location VARCHAR(255),
-    application_type VARCHAR(255) NOT NULL,
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+id INT AUTO_INCREMENT PRIMARY KEY,
+company_name VARCHAR(255) NOT NULL,
+position VARCHAR(255) NOT NULL,
+stage VARCHAR(255) NOT NULL,
+salary VARCHAR(255),
+job_type VARCHAR(255),
+url VARCHAR(255),
+applied_on DATE,
+description TEXT,
+location VARCHAR(255),
+application_type VARCHAR(255) NOT NULL,
+user_id INT,
+FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE INDEX idx_user_id ON jobs (user_id);
+-- Increment count for new stage on insert
+CREATE TRIGGER update_counts_insert
+AFTER INSERT ON jobs
+FOR EACH ROW
+UPDATE application_status
+SET
+wishlist_count = IF(NEW.stage = 'wishlist', wishlist_count + 1, wishlist_count),
+applied_count = IF(NEW.stage = 'applied', applied_count + 1, applied_count),
+interviewing_count = IF(NEW.stage = 'interviewing', interviewing_count + 1, interviewing_count),
+offer_count = IF(NEW.stage = 'offer', offer_count + 1, offer_count),
+rejected_count = IF(NEW.stage = 'rejected', rejected_count + 1, rejected_count)
+WHERE
+user_id = NEW.user_id;
+
+-- Decrement count for old stage and increment for new stage on update
+CREATE TRIGGER update_counts_update
+AFTER UPDATE ON jobs
+FOR EACH ROW
+UPDATE application_status
+SET
+wishlist_count = IF(NEW.stage = 'wishlist', wishlist_count + 1, wishlist_count),
+applied_count = IF(NEW.stage = 'applied', applied_count + 1, applied_count),
+interviewing_count = IF(NEW.stage = 'interviewing', interviewing_count + 1, interviewing_count),
+offer_count = IF(NEW.stage = 'offer', offer_count + 1, offer_count),
+rejected_count = IF(NEW.stage = 'rejected', rejected_count + 1, rejected_count),
+wishlist_count = IF(OLD.stage = 'wishlist', wishlist_count - 1, wishlist_count),
+applied_count = IF(OLD.stage = 'applied', applied_count - 1, applied_count),
+interviewing_count = IF(OLD.stage = 'interviewing', interviewing_count - 1, interviewing_count),
+offer_count = IF(OLD.stage = 'offer', offer_count - 1, offer_count),
+rejected_count = IF(OLD.stage = 'rejected', rejected_count - 1, rejected_count)
+WHERE
+user_id = NEW.user_id;
+
+-- Add a 'name' column to the 'users' table
+ALTER TABLE users
+ADD COLUMN name VARCHAR(255) NOT NULL;
+
+-- Create the 'profile' table
+CREATE TABLE profile (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    mobile_no VARCHAR(20),
+    country VARCHAR(255),
+    address VARCHAR(255),
+    linkedin_url VARCHAR(255),
+    github_url VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

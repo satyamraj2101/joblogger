@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+   body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+/* Header Styles */
+        .header {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .user-name {
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            display: flex; /* Align items horizontally */
+            align-items: center; /* Center items vertically */
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+
+        .notification-icon {
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            display: none;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user-name:hover .user-dropdown {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 6px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #dcdcdc;
+        }
+
+/* Navigation Options Styles */
+.nav-options {
+    display: flex;
+    gap: 35px;
+    margin-left: -734px;
+}
+
+.nav-option {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.nav-option:hover {
+    color: #dcdcdc;
+}
+
+
+
+        .back-button,
+        .logout-button {
+            padding: 10px;
+            margin: 0 10px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+        }
+
+        .profile-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #2a9df4;
+        }
+
+        .user-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">JOBLOGGER</div>
+
+        <!-- Navigation Options -->
+        <div class="nav-options">
+            <a href="{{ url_for('dashboard') }}" class="nav-option">Home</a>
+            <a href="#" class="nav-option">Contact</a>
+            <a href="#" class="nav-option">About</a>
+            <a href="#" class="nav-option">Contribute</a>
+        </div>
+
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-name">{{ user['username'] }}
+                <div class="dropdown-arrow">▼</div>
+                <div class="user-dropdown">
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('profile') }}">Profile</a>
+                        <a href="#">Change Password</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="notification-icon">🔔</div>
+        </div>
+    </div>
+
+<div class="profile-container">
+    <h2>Welcome, {{ user['username'] }}!</h2>
+    <div class="user-info">
+        <p><strong>Name:</strong> {{ user['name'] }}</p>
+        <p><strong>Email:</strong> {{ user['email'] }}</p>
+        <p><strong>Password:</strong> {{ user['password'] }}</p>
+        <p><strong>Total Applications:</strong> {{ user['jobs_added'] }}</p>
+    </div>
+
+    <!-- Add profile details here -->
+    <h3>Profile Details</h3>
+    <form method="POST" action="{{ url_for('save_profile') }}">
+        <!-- Include form fields for profile details, e.g., mobile_no, country, etc. -->
+        <button type="submit">Save</button>
+        <a href="{{ url_for('dashboard') }}">Cancel</a>
+    </form>
+</div>
+
+</body>
+
+</html>
