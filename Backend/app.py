@@ -33,6 +33,7 @@ class User(UserMixin):
         self.id = user_id
         self.username = username
 
+
 # Define the LoginForm class
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -78,12 +79,14 @@ with app.app_context():
     mysql.connection.commit()
     cur.close()
 
+
 # Define the SignupForm class
 class SignupForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
+
 
 # Flask-WTF form for the add_job route
 class AddJobForm(FlaskForm):
@@ -95,7 +98,7 @@ class AddJobForm(FlaskForm):
         ('interviewing', 'Interviewing'),
         ('offer', 'Offer'),
         ('rejected', 'Rejected')],
-        validators=[DataRequired()])
+                        validators=[DataRequired()])
     salary = StringField('Salary')
     job_type = SelectField('Job Type', choices=[
         ('remote', 'Remote'),
@@ -109,7 +112,7 @@ class AddJobForm(FlaskForm):
         ('part-time', 'Part-time'),
         ('full-time', 'Full-time'),
         ('internship', 'Internship')],
-        validators=[DataRequired()])
+                                   validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -137,14 +140,24 @@ def index():
 def dashboard():
     stages = ['wishlist', 'applied', 'interviewing', 'offer', 'rejected']
 
-    query = "SELECT COUNT(*) FROM jobs WHERE stage=%s AND user_id=%s"
+    # Fetch job details for the current user
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM jobs WHERE user_id=%s", (current_user.id,))
+    jobs_data = cur.fetchall()
+    column_names = [desc[0] for desc in cur.description]  # Retrieve column names
+    cur.close()
 
+    # Convert the results to a list of dictionaries
+    jobs = [dict(zip(column_names, row)) for row in jobs_data]
+
+    # Count jobs in each stage
     counts = {}
     for stage in stages:
         cur = mysql.connection.cursor()
-        cur.execute(query, (stage, current_user.id))
+        cur.execute("SELECT COUNT(*) FROM jobs WHERE stage=%s AND user_id=%s", (stage, current_user.id))
         count = cur.fetchone()[0]
         counts[stage + '_count'] = count
+    cur.close()
 
     data = {
         'username': current_user.username,
@@ -152,11 +165,12 @@ def dashboard():
         'applied_count': counts['applied_count'],
         'interviewing_count': counts['interviewing_count'],
         'offer_count': counts['offer_count'],
-        'rejected_count': counts['rejected_count']
-        # Add other counts as needed
+        'rejected_count': counts['rejected_count'],
+        'jobs': jobs,  # Pass the job details to the template
     }
 
     return render_template('dashboard.html', **data)
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -201,7 +215,8 @@ def signup():
         else:
             # Insert the new user into the database
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, password))
+            cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+                        (username, email, password))
             mysql.connection.commit()
             cur.close()
 
@@ -259,7 +274,8 @@ def add_job():
                     (company_name, position, stage, salary, job_type, url, applied_on, description, location, application_type, user_id) 
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
-                company_name, position, stage, salary, job_type, url, applied_on, description, location, application_type,
+                company_name, position, stage, salary, job_type, url, applied_on, description, location,
+                application_type,
                 current_user.id))
 
             # Insert salary information
@@ -323,4 +339,4 @@ def profile():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0")
