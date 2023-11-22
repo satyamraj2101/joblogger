@@ -78,23 +78,25 @@
             background-color: #dcdcdc;
         }
 
-        /* Navigation Options Styles */
-        .nav-options {
-            display: flex;
-            gap: 20px;
-        }
+/* Navigation Options Styles */
+.nav-options {
+    display: flex;
+    gap: 35px;
+    margin-left: -734px;
+}
 
-        .nav-option {
-            text-decoration: none;
-            color: white;
-            font-size: 1rem;
-            position: relative;
-            transition: color 0.3s;
-        }
+.nav-option {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    position: relative;
+    transition: color 0.3s;
+}
 
-        .nav-option:hover {
-            color: #dcdcdc;
-        }
+.nav-option:hover {
+    color: #dcdcdc;
+}
+
 
 
         .back-button,
@@ -153,16 +155,23 @@
         </div>
     </div>
 
-
-    <!-- Profile Container -->
-    <div class="profile-container">
-        <h2>Welcome, {{ user['username'] }}!</h2>
-        <div class="user-info">
-            <p><strong>Email:</strong> {{ user['email'] }}</p>
-            <p><strong>Password:</strong> {{ user['password'] }}</p>
-            <p><strong>Total Jobs Added:</strong> {{ user['jobs_added'] }}</p>
-        </div>
+<div class="profile-container">
+    <h2>Welcome, {{ user['username'] }}!</h2>
+    <div class="user-info">
+        <p><strong>Name:</strong> {{ user['name'] }}</p>
+        <p><strong>Email:</strong> {{ user['email'] }}</p>
+        <p><strong>Password:</strong> {{ user['password'] }}</p>
+        <p><strong>Total Applications:</strong> {{ user['jobs_added'] }}</p>
     </div>
+
+    <!-- Add profile details here -->
+    <h3>Profile Details</h3>
+    <form method="POST" action="{{ url_for('save_profile') }}">
+        <!-- Include form fields for profile details, e.g., mobile_no, country, etc. -->
+        <button type="submit">Save</button>
+        <a href="{{ url_for('dashboard') }}">Cancel</a>
+    </form>
+</div>
 
 </body>
 

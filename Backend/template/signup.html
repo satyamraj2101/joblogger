@@ -58,15 +58,18 @@
         <h1>Sign Up</h1>
         <form method="POST" action="{{ url_for('signup') }}">
             {{ form.hidden_tag() }}
-            <label for="email">Email:</label>
-            {{ form.email() }}
-            <label for="username">Username:</label>
-            {{ form.username() }}
-            <label for="password">Password:</label>
-            {{ form.password() }}
-            <button type="submit">Sign Up</button>
-        </form>
-        <a href="{{ url_for('login') }}">Already have an account? Login</a>
-    </div>
+            <label for="name">Name:</label>
+{{ form.name() }}
+
+<label for="email">Email:</label>
+{{ form.email() }}
+<label for="username">Username:</label>
+{{ form.username() }}
+<label for="password">Password:</label>
+{{ form.password() }}
+<button type="submit">Sign Up</button>
+</form>
+<a href="{{ url_for('login') }}">Already have an account? Login</a>
+</div>
 </body>
 </html>
