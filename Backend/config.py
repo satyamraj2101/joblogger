@@ -1,9 +1,9 @@
 # config.py
 
 
-MYSQL_HOST = 'db4free.net'
-MYSQL_USER = 'joblogger_jh'
-MYSQL_PASSWORD = 'joblogger123'
+MYSQL_HOST = 'joblogger.clwryofpkiv4.eu-north-1.rds.amazonaws.com'
+MYSQL_USER = 'admin'
+MYSQL_PASSWORD = 'loginawsdb'
 MYSQL_DB = 'joblogger'
 
 SECRET_KEY = 'koohoo123'
