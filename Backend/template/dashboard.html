@@ -304,6 +304,28 @@
             bottom: 0;
             width: 100%;
         }
+          .job-details-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .job-details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .job-details-table th, .job-details-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .job-details-table th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 
@@ -410,8 +432,31 @@
         <div class="chart-container">
             <canvas id="statusChart"></canvas>
         </div>
+           <!-- Job Details Section -->
+        <div class="job-details-container">
+            <h2>Job Details</h2>
+            <!-- Job details table -->
+            <table class="job-details-table">
+                <tr>
+                    <th>Company Name</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Applied On</th>
+                </tr>
+                <!-- Loop through jobs data and generate rows -->
+                {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.company_name }}</td>
+                        <td>{{ job.position }}</td>
+                        <td>{{ job.salary }}</td>
+                        <td>{{ job.applied_on }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
 
     </div>
+
 
     <!-- Footer -->
     <div class="footer">
