@@ -108,20 +108,49 @@
             text-decoration: none;
         }
 
-        .profile-container {
-            margin: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-        }
+        {#.profile-container {#}
+        {#    margin: 20px;#}
+        {#    padding: 20px;#}
+        {#    background-color: #fff;#}
+        {#    border-radius: 10px;#}
+        {#}#}
 
         h2 {
             color: #2a9df4;
+            font-size: 30px;
         }
 
-        .user-info {
-            margin-top: 20px;
+        h3{
+            font-size: 20px;
         }
+
+       .user-info {
+    margin-top: 20px;
+    font-size: 17px;
+}
+.upgrade-button {
+    background-color: #2a9df4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 22px;
+    margin-left: 30px;
+}
+
+.upgrade-button:hover {
+    background-color: #1d7bb0;
+}
+
+.profile-container {
+    margin: 20px;
+    padding: 15px 66px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
     </style>
 </head>
 
@@ -154,25 +183,32 @@
             <div class="notification-icon">🔔</div>
         </div>
     </div>
-
 <div class="profile-container">
-    <h2>Welcome, {{ user['username'] }}!</h2>
-    <div class="user-info">
-        <p><strong>Name:</strong> {{ user['name'] }}</p>
-        <p><strong>Email:</strong> {{ user['email'] }}</p>
-        <p><strong>Password:</strong> {{ user['password'] }}</p>
-        <p><strong>Total Applications:</strong> {{ user['jobs_added'] }}</p>
-    </div>
-
-    <!-- Add profile details here -->
-    <h3>Profile Details</h3>
-    <form method="POST" action="{{ url_for('save_profile') }}">
-        <!-- Include form fields for profile details, e.g., mobile_no, country, etc. -->
-        <button type="submit">Save</button>
-        <a href="{{ url_for('dashboard') }}">Cancel</a>
-    </form>
+        <h2>Welcome, {{ user['username'] }}!</h2>
+        <h3>Profile Details</h3>
+        <div class="user-info">
+            <p><strong>Name:</strong> {{ user['name'] }}</p>
+            <p><strong>Email:</strong> {{ user['email'] }}</p>
+            <p><strong>Password:</strong> {{ user['password'] }}</p>
+            <p><strong>Total Applications:</strong> {{ user['jobs_added'] }}</p>
+        </div>
+<!-- Display profile details -->
+<div class="user-info">
+    {% if profile %}
+        <p><strong>Mobile No:</strong> {{ profile['mobile_no'] }}</p>
+        <p><strong>Country:</strong> {{ profile['country'] }}</p>
+        <p><strong>Address:</strong> {{ profile['address'] }}</p>
+        <p><strong>LinkedIn URL:</strong> {{ profile['linkedin_url'] }}</p>
+        <p><strong>GitHub URL:</strong> {{ profile['github_url'] }}</p>
+    {% else %}
+        <p>No profile details available.</p>
+    {% endif %}
 </div>
 
+<!-- Upgrade Profile Button -->
+<button class="upgrade-button" onclick="location.href='{{ url_for('profile_upgrade') }}'">Upgrade Profile</button>
+
+    </div>
 </body>
 
 </html>

@@ -96,7 +96,9 @@ with app.app_context():
                 address VARCHAR(255),
                 linkedin_url VARCHAR(255),
                 github_url VARCHAR(255),
-                FOREIGN KEY (user_id) REFERENCES users(id)
+                name varchar(255),
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (name) REFERENCES users(name)
             )
         """
     cur.execute(CREATE_PROFILE_TABLE)
@@ -251,7 +253,6 @@ def signup():
 
     return render_template('signup.html', form=form)
 
-
 @app.route('/save_profile', methods=['POST'])
 @login_required
 def save_profile():
@@ -263,13 +264,17 @@ def save_profile():
         linkedin_url = request.form.get('linkedin_url')
         github_url = request.form.get('github_url')
 
-        # Save the form data to the 'profile' table
+        # Use INSERT ... ON DUPLICATE KEY UPDATE to handle both insert and update
         cur = mysql.connection.cursor()
         cur.execute("""
             INSERT INTO profile 
                 (user_id, mobile_no, country, address, linkedin_url, github_url) 
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (current_user.id, mobile_no, country, address, linkedin_url, github_url))
+            ON DUPLICATE KEY UPDATE
+                mobile_no=%s, country=%s, address=%s, linkedin_url=%s, github_url=%s
+        """, (current_user.id, mobile_no, country, address, linkedin_url, github_url,
+              mobile_no, country, address, linkedin_url, github_url))
+
         mysql.connection.commit()
         cur.close()
 
@@ -359,7 +364,6 @@ def add_job():
     # Render the 'add_job.html' template if the form is not valid or an exception occurred
     return render_template('add_job.html', form=form)
 
-
 @app.route('/profile')
 @login_required
 def profile():
@@ -373,21 +377,74 @@ def profile():
     jobs_added_count = cur.fetchone()[0] or 0  # Set to 0 if count is None
     cur.close()
 
+    # Fetch profile details for the current user
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM profile WHERE user_id=%s", (current_user.id,))
+    profile_data = cur.fetchone()
+    cur.close()
+
     if user_data:
         user = {
             'id': user_data[0],
-            'username': user_data[1],
-            'email': user_data[2],
-            'password': user_data[3],
+            'name': user_data[1],
+            'username': user_data[2],
+            'email': user_data[3],
+            'password': user_data[4],
             'jobs_added': jobs_added_count,
         }
 
-        return render_template('profile.html', user=user)
+        profile = {
+            'mobile_no': profile_data[1] if profile_data else None,
+            'country': profile_data[2] if profile_data else None,
+            'address': profile_data[3] if profile_data else None,
+            'linkedin_url': profile_data[4] if profile_data else None,
+            'github_url': profile_data[5] if profile_data else None,
+        }
+
+        return render_template('profile.html', user=user, profile=profile)
 
     flash('User not found', 'danger')
     return redirect(url_for('dashboard'))
 
 
+
+@app.route('/profile_upgrade', methods=['GET','POST'])
+@login_required
+def profile_upgrade():
+    if request.method == 'POST':
+        # Retrieve form data for profile details
+        mobile_no = request.form.get('mobile_no')
+        country = request.form.get('country')
+        address = request.form.get('address')
+        linkedin_url = request.form.get('linkedin_url')
+        github_url = request.form.get('github_url')
+
+        # Use INSERT ... ON DUPLICATE KEY UPDATE to handle both insert and update
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            INSERT INTO profile 
+                (user_id, mobile_no, country, address, linkedin_url, github_url) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                mobile_no=%s, country=%s, address=%s, linkedin_url=%s, github_url=%s
+        """, (current_user.id, mobile_no, country, address, linkedin_url, github_url,
+              mobile_no, country, address, linkedin_url, github_url))
+
+        mysql.connection.commit()
+        cur.close()
+
+        # Update the 'name' field in the 'users' table
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE users SET name=%s WHERE id=%s", (current_user.username, current_user.id))
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Profile details upgraded successfully!', 'success')
+
+        # Redirect to the 'profile' route after successfully upgrading the profile
+        return redirect(url_for('profile'))
+
+    return render_template('profile_upgrade.html', user=current_user)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Your Profile</title>
+    <style>
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #2a9df4;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1a7bb9;
+        }
+
+        a {
+            margin-top: 10px;
+            text-align: center;
+            color: #2a9df4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Profile Upgrade Form -->
+<div class="profile-container">
+    <h2>Upgrade Your Profile, {{ user['username'] }}!</h2>
+    <form method="POST" action="{{ url_for('profile_upgrade') }}">
+        <!-- Form fields for profile details -->
+        <label for="mobile_no">Mobile No.:</label>
+        <input type="text" id="mobile_no" name="mobile_no" required>
+
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" required>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+
+        <label for="linkedin_url">LinkedIn URL:</label>
+        <input type="text" id="linkedin_url" name="linkedin_url">
+
+        <label for="github_url">GitHub URL:</label>
+        <input type="text" id="github_url" name="github_url">
+
+        <!-- Save and Cancel buttons -->
+        <button type="submit">Save</button>
+        <a href="{{ url_for('profile') }}">Cancel</a>
+    </form>
+</div>
+
+</body>
+</html>

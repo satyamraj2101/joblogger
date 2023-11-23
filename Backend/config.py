@@ -1,7 +1,7 @@
 # config.py
 
-MYSQL_HOST = 'joblogger.clwryofpkiv4.eu-north-1.rds.amazonaws.com'
-# MYSQL_HOST = 'joblogger.c05vbhloo7fr.us-east-1.rds.amazonaws.com'
+# MYSQL_HOST = 'joblogger.clwryofpkiv4.eu-north-1.rds.amazonaws.com'
+MYSQL_HOST = 'joblogger.c05vbhloo7fr.us-east-1.rds.amazonaws.com'
 
 MYSQL_USER = 'admin'
 MYSQL_PASSWORD = 'loginawsdb'

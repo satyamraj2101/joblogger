@@ -4,6 +4,7 @@ username VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL,
 password VARCHAR(255) NOT NULL
 );
+
 CREATE TABLE application_status (
 id INT AUTO_INCREMENT PRIMARY KEY,
 username VARCHAR(255) NOT NULL,
@@ -15,6 +16,7 @@ rejected_count INT,
 user_id INT,
 FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 CREATE TABLE jobs (
 id INT AUTO_INCREMENT PRIMARY KEY,
 company_name VARCHAR(255) NOT NULL,
