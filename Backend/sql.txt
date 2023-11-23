@@ -1,5 +1,6 @@
 CREATE TABLE users (
 id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
 username VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL,
 password VARCHAR(255) NOT NULL
@@ -73,8 +74,7 @@ ADD COLUMN name VARCHAR(255) NOT NULL;
 
 -- Create the 'profile' table
 CREATE TABLE profile (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id INT primary key,
     mobile_no VARCHAR(20),
     country VARCHAR(255),
     address VARCHAR(255),
