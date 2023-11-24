@@ -6,8 +6,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_mysqldb import MySQL
 from flask_wtf import FlaskForm
 from wtforms import SelectField, DateField, TextAreaField, StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import current_user
 
 # Initialize Flask app
 app = Flask(__name__, template_folder='template')
@@ -32,6 +33,7 @@ class User(UserMixin):
     def __init__(self, user_id, username):
         self.id = user_id
         self.username = username
+
 
 
 # Define the LoginForm class
@@ -115,6 +117,8 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
 
+
+
 # Flask-WTF form for the add_job route
 class AddJobForm(FlaskForm):
     company_name = StringField('Company Name', validators=[DataRequired()])
@@ -142,6 +146,7 @@ class AddJobForm(FlaskForm):
                                    validators=[DataRequired()])
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     cur = mysql.connection.cursor()
@@ -150,7 +155,9 @@ def load_user(user_id):
     cur.close()
 
     if user_data:
-        return User(user_data[0], user_data[1])  # Assuming 'id' is the first element and 'username' is the second
+        user_id, name, username, email, password = user_data
+        return User(user_id, username)
+
     return None
 
 
@@ -253,6 +260,8 @@ def signup():
 
     return render_template('signup.html', form=form)
 
+
+
 @app.route('/save_profile', methods=['POST'])
 @login_required
 def save_profile():
@@ -290,17 +299,22 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/forgot_password', methods=['GET', 'POST'])
+# @app.route('/forgot_password', methods=['GET', 'POST'])
+# def forgot_password():
+#     form = ForgotPasswordForm()
+#     if form.validate_on_submit():
+#         email = form.email.data
+#         # Implement your logic to handle the password reset (send email, generate token, etc.)
+#         flash(f"Password reset requested for email: {email}. (Not implemented in this example)", 'info')
+#
+#     return render_template('forgot_password.html', form=form)
+
+
+
+@app.route('/forgot_password')
 def forgot_password():
-    form = ForgotPasswordForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        # Implement your logic to handle the password reset (send email, generate token, etc.)
-        flash(f"Password reset requested for email: {email}. (Not implemented in this example)", 'info')
-
-    return render_template('forgot_password.html', form=form)
-
-
+    # logic here
+    pass
 @app.route('/add_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
@@ -408,9 +422,22 @@ def profile():
 
 
 
-@app.route('/profile_upgrade', methods=['GET','POST'])
+
+@app.route('/profile_upgrade', methods=['GET', 'POST'])
 @login_required
 def profile_upgrade():
+    # Fetch user data from the database using the current user's ID
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE id=%s", (current_user.id,))
+    user_data = cur.fetchone()
+    cur.close()
+
+    # Fetch profile details for the current user
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM profile WHERE user_id=%s", (current_user.id,))
+    profile_data = cur.fetchone()
+    cur.close()
+
     if request.method == 'POST':
         # Retrieve form data for profile details
         mobile_no = request.form.get('mobile_no')
@@ -418,6 +445,11 @@ def profile_upgrade():
         address = request.form.get('address')
         linkedin_url = request.form.get('linkedin_url')
         github_url = request.form.get('github_url')
+
+        # Retrieve form data for user details
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
         # Use INSERT ... ON DUPLICATE KEY UPDATE to handle both insert and update
         cur = mysql.connection.cursor()
@@ -430,12 +462,9 @@ def profile_upgrade():
         """, (current_user.id, mobile_no, country, address, linkedin_url, github_url,
               mobile_no, country, address, linkedin_url, github_url))
 
-        mysql.connection.commit()
-        cur.close()
-
-        # Update the 'name' field in the 'users' table
-        cur = mysql.connection.cursor()
-        cur.execute("UPDATE users SET name=%s WHERE id=%s", (current_user.username, current_user.id))
+        # Update the 'name', 'email', and 'password' fields in the 'users' table
+        cur.execute("UPDATE users SET name=%s, email=%s, password=%s WHERE id=%s",
+                    (name, email, password, current_user.id))
         mysql.connection.commit()
         cur.close()
 
@@ -444,7 +473,19 @@ def profile_upgrade():
         # Redirect to the 'profile' route after successfully upgrading the profile
         return redirect(url_for('profile'))
 
-    return render_template('profile_upgrade.html', user=current_user)
+    # Pre-fill the form with existing data if available
+    form_data = {
+        'mobile_no': profile_data[1] if profile_data else '',
+        'country': profile_data[2] if profile_data else '',
+        'address': profile_data[3] if profile_data else '',
+        'linkedin_url': profile_data[4] if profile_data else '',
+        'github_url': profile_data[5] if profile_data else '',
+        'name': user_data[1] if user_data else '',
+        'email': user_data[3] if user_data else '',
+        'password': user_data[4] if user_data else '',
+    }
+
+    return render_template('profile_upgrade.html', user=current_user, form_data=form_data)
 
 
 if __name__ == '__main__':
