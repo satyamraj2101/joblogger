@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>About Joblogger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .user-name {
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            display: flex; /* Align items horizontally */
+            align-items: center; /* Center items vertically */
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+
+        .notification-icon {
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            display: none;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .user-name:hover .user-dropdown {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 6px 12px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #dcdcdc;
+        }
+
+        /* Navigation Options Styles */
+        .nav-options {
+            display: flex;
+            gap: 35px;
+            margin-left: -734px;
+        }
+
+        .nav-option {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-option:hover {
+            color: #dcdcdc;
+        }
+
+        /* About Container Styles */
+        .about-container {
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .about-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .about-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Centered Heading Styles */
+        .centered-heading {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Beautiful Textbox Styles */
+        .beautiful-textbox {
+            margin: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        /* LinkedIn Image Boxes Styles */
+        .linkedin-boxes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .linkedin-box {
+            width: 120px;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .linkedin-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        /* Additional About Page Contents Styles */
+        .additional-contents {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #2a9df4;
+            color: white;
+            text-align: center;
+            padding: 1px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">JOBLOGGER</div>
+
+        <!-- Navigation Options -->
+        <div class="nav-options">
+            <a href="{{ url_for('dashboard')}}" class="nav-option">Home</a>
+            <a href="#" class="nav-option">Contact</a>
+            <a href="{{ url_for('about')}}" class="nav-option">About</a>
+            <a href="#" class="nav-option">Contribute</a>
+        </div>
+
+        <!-- User Section -->
+        <div class="user-section">
+            <div class="user-name">{{ username }}
+                <div class="dropdown-arrow">▼</div>
+                <div class="user-dropdown">
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('profile') }}">Profile</a>
+                        <a href="#">Change Password</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="notification-icon">🔔</div>
+        </div>
+    </div>
+
+    <!-- About Container -->
+    <div class="about-container">
+        <h1 class="about-title">About Joblogger</h1>
+        <p class="about-content">
+            Joblogger is a comprehensive job tracking application designed to help you manage your job search effectively.
+            Keep track of job applications, interview stages, and more. Stay organized and focused on your career goals with
+            Joblogger.
+        </p>
+
+        <!-- Centered Heading -->
+        <div class="centered-heading">
+            For India by KIITians
+        </div>
+
+        <!-- Beautiful Textbox -->
+        <div class="beautiful-textbox">
+            Joblogger is proudly developed by a team of passionate developers from KIIT (Kalinga Institute of Industrial
+            Technology). Our mission is to empower individuals in India with a tool that simplifies the job search process
+            and enhances their career prospects. With Joblogger, we aim to make job tracking and organization an effortless
+            experience for everyone.
+        </div>
+
+        <!-- LinkedIn Image Boxes -->
+        <div class="linkedin-boxes">
+            <div class="linkedin-box">
+                <img src="https://media.licdn.com/dms/image/C4D03AQFHF9Tf70MXLA/profile-displayphoto-shrink_800_800/0/1652386583432?e=1712188800&v=beta&t=ZiV3_9bzO4ez5zbW63pAfw0BKx4aXUl-aQk4CBt37Ho" alt="LinkedIn Profile 1" class="linkedin-image">
+                <p>Satyam Raj</p>
+            </div>
+            <div class="linkedin-box">
+                <img src="https://media.licdn.com/dms/image/D4D03AQFY2JFspe55pA/profile-displayphoto-shrink_800_800/0/1667707712146?e=1712188800&v=beta&t=NPO1L337xClC5OODJtJL2pV3b7pRWLy_2f3c6IQeSS0" alt="LinkedIn Profile 2" class="linkedin-image">
+                <p>Aditya Kumar</p>
+            </div>
+            <div class="linkedin-box">
+                <img src="https://media.licdn.com/dms/image/D5603AQFiE0nyTX5toQ/profile-displayphoto-shrink_800_800/0/1688545208851?e=1712188800&v=beta&t=p3UiMauJH7gXLOBRhLc6vQbN5ZAkfZjLjOs5QxNKu_Y" alt="LinkedIn Profile 3" class="linkedin-image">
+                <p>Shivani Prakhar chandel</p>
+            </div>
+        </div>
+
+        <!-- Additional About Page Contents -->
+        <div class="additional-contents">
+            <h2>Our Vision</h2>
+            <p>
+                At Joblogger, we envision a future where job seekers across India have a user-friendly and efficient
+                platform to manage their job applications seamlessly. Our goal is to contribute to the professional growth
+                of individuals by providing them with a reliable tool for organizing their job search journey.
+            </p>
+
+            <h2>How Joblogger Works</h2>
+            <p>
+                Joblogger allows users to add and track job applications, categorize them based on status, and visualize
+                their progress. The intuitive interface and powerful features make it easy for users to stay on top of their
+                job search game.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2023 JobLogger. All rights reserved.</p>
+    </div>
+</body>
+
+</html>
