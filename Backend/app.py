@@ -159,6 +159,10 @@ def load_user(user_id):
 def index():
     return redirect(url_for('dashboard'))
 
+@app.route('/about')
+@login_required
+def about():
+    return render_template('about.html')
 
 @app.route('/dashboard')
 @login_required
