@@ -102,26 +102,30 @@
 
         /* Search Container Styles */
         .search-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-top: 10px;
-            margin-right: 20px;
-        }
-
-        .search-bar {
-            padding: 10px;
-            margin-right: 10px;
-        }
-
-        .search-button {
-            background-color: #2a9df4;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: 230px;
+}
+.search-bar {
+    padding: 15px;
+    margin-right: 10px;
+    width: 40%;
+    border: 1px solid #323030;
+    border-radius: 30px;
+    font-size: 1rem;
+}
+.search-button {
+    background-color: #2a9df4;
+    color: white;
+    border: none;
+    padding: 15px 23px;
+    cursor: pointer;
+    border-radius: 30px;
+    font-size: 1rem;
+}
         /* Main Container Styles */
         .main-container {
             display: flex;
@@ -264,20 +268,21 @@
 
         /* Chart Container Styles */
         .chart-container {
-            background-color: #fff;
-            padding: 20px; /* Smaller padding */
-            border-radius: 10px;
-            margin: 20px 0;
-            align-self: flex-end; /* Align to the right */
-            height: 300px;
-            width: calc(100% - 250px); /* Adjusted width */
-        }
+    background-color: #fff;
+    /* padding: 20px; */
+    border-radius: 10px;
+    margin-left: 280px;
+    align-self: start;
+    height: 300px;
+    width: 40%;
+}
 
         .togglebutton {
-            text-align: right;
-            margin-right: 20px;
-            margin-top: 10px;
-        }
+    text-align: right;
+    margin-left: 170px;
+    margin-bottom: 5px;
+    align-self: center;
+}
 
         .toggleChartButton {
             background-color: #2a9df4;
@@ -293,6 +298,52 @@
             background-color: #1e7fc4;
         }
 
+{#<!-- Notes Box Styles -->#}
+    .notes-box {
+    background-color: #fff;
+    border-radius: 10px;
+    margin-top: -294px;
+    margin-right: 61px;
+    padding: 20px;
+    height: 287px;
+    width: 30%;
+    align-self: end;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid #9b9090;
+}
+
+    .notes-heading {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notes-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .note-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .add-note-button {
+        background-color: #2a9df4;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
 
         /* Footer Styles */
         .footer {
@@ -433,7 +484,17 @@
         <div class="chart-container">
             <canvas id="statusChart"></canvas>
         </div>
-           <!-- Job Details Section -->
+<div class="notes-box">
+    <div class="notes-heading">
+        Notes
+        <button class="add-note-button" onclick="addNote()">+</button>
+    </div>
+    <ul class="notes-list" id="notesList">
+        <!-- Notes will be dynamically added here -->
+    </ul>
+</div>
+
+        <!-- Job Details Section -->
         <div class="job-details-container">
             <h2>Job Details</h2>
             <!-- Job details table -->
@@ -512,6 +573,24 @@
         // Initial chart type
         var chart;
         initChart('bar');
+    // Function to add a new note
+    function addNote() {
+        var notesList = document.getElementById('notesList');
+        var noteText = prompt('Enter your note:');
+        if (noteText) {
+            var noteItem = document.createElement('li');
+            noteItem.classList.add('note-item');
+            noteItem.textContent = noteText;
+            notesList.appendChild(noteItem);
+        }
+    }
+
+    // Function to view all notes
+    function viewAllNotes() {
+        // Redirect to a new page where all notes are available
+        // You can implement this as a new HTML page
+        alert('Redirecting to view all notes page...');
+    }
     </script>
 </body>
 
